@@ -4,6 +4,8 @@ from typing import Dict
 
 PUBMED_JOURNAL_QUERY = (
     '"BMJ"[jour] OR "Br Med J"[jour] OR "Lancet"[jour] OR "Nature"[jour] OR '
+    '"JAMA"[jour] OR "JAMA Intern Med"[jour] OR "N Engl J Med"[jour] OR '
+    '"Ann Intern Med"[jour] OR "Diabetes Care"[jour] OR "Diabetologia"[jour] OR '
     '"Circulation"[jour] OR "J Am Heart Assoc"[jour] OR "Eur Heart J"[jour] OR '
     '"Circ Res"[jour] OR "Stroke"[jour]'
 )
@@ -13,6 +15,12 @@ ISO_ALLOWLIST = {
     "brmedj": "Br Med J",
     "lancet": "Lancet",
     "nature": "Nature",
+    "jamainternmed": "JAMA Intern Med",
+    "jama": "JAMA",
+    "nengljmed": "N Engl J Med",
+    "anninternmed": "Ann Intern Med",
+    "diabetescare": "Diabetes Care",
+    "diabetologia": "Diabetologia",
     "circulation": "Circulation",
     "jamheartassoc": "J Am Heart Assoc",
     "eurheartj": "Eur Heart J",
@@ -23,10 +31,16 @@ ISO_ALLOWLIST = {
 JOURNAL_TIER_SCORES: Dict[str, float] = {
     "lancet": 1.00,
     "nature": 1.00,
+    "nengljmed": 0.98,
+    "jamainternmed": 0.93,
+    "jama": 0.96,
+    "anninternmed": 0.92,
     "eurheartj": 0.95,
     "circulation": 0.93,
+    "diabetescare": 0.90,
     "circres": 0.90,
     "stroke": 0.90,
+    "diabetologia": 0.88,
     "bmj": 0.86,
     "brmedj": 0.86,
     "jamheartassoc": 0.82,

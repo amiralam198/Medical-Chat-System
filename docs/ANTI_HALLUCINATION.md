@@ -13,7 +13,7 @@ This project does not generate medical answers from model weights. It retrieves 
 - If no usable evidence sentence exists, the answer is exactly:
 
 ```text
-I don't know based on retrieved medical evidence.
+I don't know based on the retrieved evidence.
 ```
 
 ## Extractive Answer Rules

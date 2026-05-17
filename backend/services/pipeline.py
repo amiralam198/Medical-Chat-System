@@ -27,11 +27,27 @@ async def run_chat_pipeline(
 ) -> ChatResponseModel:
     clean_message = " ".join((message or "").split())
     query_intent = build_query_intent(clean_message)
+    if "broad_condition" in query_intent.intents:
+        return ChatResponseModel(
+            answer=IDK_PHRASE,
+            confidence="Low",
+            sources=[],
+            pubmed_query=query_intent.expanded_search_query,
+            retrieval_note="The question is too broad; specify the disease subtype, stage, or clinical setting.",
+            query_intent=query_intent,
+            evidence_context_ids=[],
+        )
+
+    effective_recency_years = recency_years
+    latest_note = ""
+    if "latest_treatment" in query_intent.intents and effective_recency_years is None:
+        effective_recency_years = 5
+        latest_note = "Latest-treatment query used a 5-year recency filter."
 
     pubmed_records, pubmed_query, retrieval_note = await retrieve_pubmed(
         query_intent=query_intent,
         settings=settings,
-        recency_years=recency_years,
+        recency_years=effective_recency_years,
     )
 
     pdf_chunks = []
@@ -46,8 +62,9 @@ async def run_chat_pipeline(
             LOGGER.warning("PDF extraction failed: %s", exc)
             pdf_note = str(exc)
 
-    pubmed_ranked = rank_pubmed_records(pubmed_records, clean_message, embeddings=embeddings)
-    pdf_ranked = rank_pdf_chunks(pdf_chunks, clean_message, embeddings=embeddings)
+    ranking_query = query_intent.expanded_search_query
+    pubmed_ranked = rank_pubmed_records(pubmed_records, ranking_query, embeddings=embeddings)
+    pdf_ranked = rank_pdf_chunks(pdf_chunks, ranking_query, embeddings=embeddings)
     ranked_context = merge_pdf_hits(
         pubmed_ranked=pubmed_ranked,
         pdf_ranked=pdf_ranked,
@@ -61,7 +78,7 @@ async def run_chat_pipeline(
     confidence = estimate_confidence(answer, ranked_context, used_ids)
     sources = [] if answer == IDK_PHRASE else package_sources(ranked_context, used_ids)
 
-    notes = [note for note in [retrieval_note, pdf_note] if note]
+    notes = [note for note in [latest_note, retrieval_note, pdf_note] if note]
     if embeddings is None:
         notes.append("Embeddings unavailable; lexical ranking was used.")
 

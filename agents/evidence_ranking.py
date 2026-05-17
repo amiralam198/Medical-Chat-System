@@ -37,6 +37,19 @@ STOPWORDS = {
     "with",
 }
 
+PREFERRED_EVIDENCE_SCORES = {
+    "Practice guideline": 1.0,
+    "Guideline": 0.95,
+    "Systematic review": 0.9,
+    "Meta-analysis": 0.88,
+    "Randomized controlled trial": 0.84,
+    "Clinical trial": 0.76,
+    "Review": 0.72,
+    "Observational study": 0.42,
+    "Comparative study": 0.4,
+    "Research article": 0.25,
+}
+
 
 def rank_pubmed_records(
     records: Sequence[PubMedRecord],
@@ -54,7 +67,14 @@ def rank_pubmed_records(
         )
         recency = recency_score(record.year)
         journal_score = journal_tier_score(record.journal)
-        combined = 0.48 * relevance + 0.32 * recency + 0.20 * journal_score
+        label = evidence_label(record.publication_types)
+        evidence_score = PREFERRED_EVIDENCE_SCORES.get(label, 0.25)
+        combined = (
+            0.42 * relevance
+            + 0.28 * recency
+            + 0.18 * journal_score
+            + 0.12 * evidence_score
+        )
         ranked.append(
             RankedSource(
                 source_id="pmid:%s" % record.pmid,
@@ -65,7 +85,7 @@ def rank_pubmed_records(
                 year=record.year,
                 url=record.url,
                 doi=record.doi,
-                evidence_label=evidence_label(record.publication_types),
+                evidence_label=label,
                 relevance_score=round(float(relevance), 4),
                 recency_score=round(float(recency), 4),
                 journal_score=round(float(journal_score), 4),

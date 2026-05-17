@@ -7,7 +7,7 @@ The answer path uses no generative LLM APIs. There are no OpenAI, Gemini, Anthro
 ## Trusted Evidence Policy
 
 - PubMed via NCBI E-utilities only: `esearch` plus `efetch`.
-- Journal allowlist: BMJ, Br Med J, Lancet, Nature, Circulation, J Am Heart Assoc, Eur Heart J, Circ Res, Stroke.
+- Journal allowlist: BMJ, Br Med J, Lancet, Nature, JAMA, JAMA Intern Med, N Engl J Med, Ann Intern Med, Diabetes Care, Diabetologia, Circulation, J Am Heart Assoc, Eur Heart J, Circ Res, Stroke.
 - PubMed query scope: `({user_query}) AND (PUBMED_JOURNAL_QUERY)` with optional recency filter.
 - Post-fetch journal verification checks `Journal/ISOAbbreviation` against the allowlist.
 - Publisher full text is never scraped. Paywalled content is not accessed.
@@ -90,7 +90,7 @@ npx vercel deploy --prod
 
 - `SGLT2 inhibitors heart failure`
 - `atrial fibrillation anticoagulation`
-- `stomach ache with sneezing` may correctly return `I don't know based on retrieved medical evidence.` if no allowlisted-journal abstracts match.
+- `stomach ache with sneezing` may correctly return `I don't know based on the retrieved evidence.` if no allowlisted-journal abstracts match.
 
 ## API
 
@@ -125,5 +125,5 @@ The pipeline is intentionally modular:
 The default no-evidence response is exactly:
 
 ```text
-I don't know based on retrieved medical evidence.
+I don't know based on the retrieved evidence.
 ```

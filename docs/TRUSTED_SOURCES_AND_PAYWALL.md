@@ -17,6 +17,12 @@ The PubMed query is restricted to:
 - Br Med J
 - Lancet
 - Nature
+- JAMA
+- JAMA Intern Med
+- N Engl J Med
+- Ann Intern Med
+- Diabetes Care
+- Diabetologia
 - Circulation
 - J Am Heart Assoc
 - Eur Heart J
