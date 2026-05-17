@@ -1,0 +1,8 @@
+.git
+.venv
+.hf_cache
+__pycache__
+*.pyc
+docs
+frontend
+requirements.txt

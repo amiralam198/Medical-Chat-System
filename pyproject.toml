@@ -1,0 +1,17 @@
+[project]
+name = "medical-chat-system"
+version = "2.1.0"
+description = "FastAPI deployment target for a reliable medical evidence chat system."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "fastapi>=0.117.1",
+  "httpx>=0.28.1",
+  "numpy>=2.0.0",
+  "pydantic-settings>=2.7.0",
+  "pymupdf>=1.25.0",
+  "python-multipart>=0.0.20",
+]
+
+[project.scripts]
+app = "backend.main:app"

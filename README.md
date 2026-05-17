@@ -66,6 +66,26 @@ Expected shape:
 
 `embeddings_loaded` may be `"no"` on machines without local model dependencies. Chat still works through lexical ranking.
 
+## Deploy on Vercel
+
+The Vercel deployment serves the FastAPI app from `backend.main:app` through the root `app.py` shim and includes a browser UI at `/`. The Streamlit UI remains for local use.
+
+Vercel installs the minimal runtime dependencies from `pyproject.toml`. The heavier local-only dependencies in `requirements.txt` are excluded from Vercel uploads by `.vercelignore`, and embeddings are disabled on Vercel so the API uses lexical ranking.
+
+Set these environment variables in Vercel when available:
+
+```bash
+NCBI_EMAIL=you@example.com
+DISABLE_EMBEDDINGS=1
+```
+
+Deploy from the project root:
+
+```bash
+npx vercel deploy
+npx vercel deploy --prod
+```
+
 ## Demo Queries
 
 - `SGLT2 inhibitors heart failure`

@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.logging_config import configure_logging
 from backend.routes.chat import router as chat_router
 from backend.settings import get_settings
+from backend.web_ui import index_page
 from vectorstore.embeddings import load_embeddings
 
 
@@ -18,6 +19,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 async def lifespan(app: FastAPI):
     configure_logging()
     os.environ.setdefault("HF_HOME", str(PROJECT_ROOT / ".hf_cache"))
+    if os.getenv("VERCEL"):
+        os.environ.setdefault("DISABLE_EMBEDDINGS", "1")
     app.state.embeddings = load_embeddings()
     app.state.embeddings_loaded = app.state.embeddings is not None
     yield
@@ -39,6 +42,11 @@ app.add_middleware(
 )
 
 app.include_router(chat_router)
+
+
+@app.get("/", include_in_schema=False)
+async def index():
+    return index_page()
 
 
 @app.get("/health")
